@@ -54,6 +54,15 @@ catalogue <-  subset(catalogue, grepl("Ur III", period) )
 
 ```
 
+
+```{r}
+#Add 2 columns
+catalogue$assumed_prov<-NA
+catalogue$guessed_prov<-NA
+
+```
+
+
 ## Clean-up ATF and match with catalogue
 - convert the file to 2 columns table: text id + atf
 - clean up atf from any lines that do not start with a numeral
