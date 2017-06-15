@@ -76,4 +76,3 @@ At this point, we have one table of 3 columns : text_id, provenience and atf.
 ```{r}
 
 ```
-
