@@ -41,6 +41,9 @@ unzip('atf.zip', files = NULL, list = FALSE, overwrite = TRUE,
 This chunk reads the catalogue into a dataframe and selects only the needed columns
 ```{r}
 catalogue= read.csv("cdli_catalogue.csv")  # read csv file 
+#pick only admin texts
+catalogue <-  subset(catalogue, grepl("Admin", genre) )
+#pick columns
 catalogue <- catalogue[,c('id_text','provenience','period')]
 catalogue2 <- catalogue
 ```
