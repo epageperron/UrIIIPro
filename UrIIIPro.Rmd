@@ -1,0 +1,79 @@
+---
+title: "Ur III administrative texts proveniance classification"
+output: html_notebook
+---
+
+
+This Notebook will guide you though the classification task of Ur III administrative texts, assigning unprovenanced tablets to a site. 
+
+Insert here a function to cross reference the catalogue and the atf dump for provenience and prepare the adequate csv file.
+
+
+
+  
+## Grab the cdli dumps
+```{r}
+download.file('https://raw.githubusercontent.com/cdli-gh/data/master/cdli_catalogue.csv.zip', 'catalogue.zip', 'wget', quiet = FALSE, mode = "w",
+              cacheOK = TRUE,
+              extra = getOption("download.file.extra"))
+
+download.file('https://raw.githubusercontent.com/cdli-gh/data/master/cdliatf_unblocked.atf.zip', 'atf.zip', 'wget', quiet = FALSE, mode = "w",
+              cacheOK = TRUE,
+              extra = getOption("download.file.extra"))
+
+
+
+```
+
+
+
+## Unzip
+```{r}
+unzip('catalogue.zip', files = NULL, list = FALSE, overwrite = TRUE,
+      junkpaths = FALSE, exdir = ".", unzip = "internal",
+      setTimes = FALSE)
+
+unzip('atf.zip', files = NULL, list = FALSE, overwrite = TRUE,
+      junkpaths = FALSE, exdir = ".", unzip = "internal",
+      setTimes = FALSE)
+
+```
+
+
+##Clean up catalogue
+- Remove ? after texts with Ur III ?
+- Remove entries from other periods than Ur III and remove the priod column
+- Remove non-administrative texts
+- Remove provenience from entries with ? in provenience and move to ther column
+- Create table with text_id, provenience and an emtpy column for textual data
+- Should I also add dates referenced and size fields?
+
+text_id, atf, known_prov, assumed_prov, guessed_prov
+```{r}
+catalogue= read.csv("cdli_catalogue.csv")  # read csv file 
+
+```
+
+## Clean-up ATF and match with catalogue
+- convert the file to 2 columns table: text id + atf
+- clean up atf from any lines that do not start with a numeral
+- remove numerals
+- clean up tokens
+- match the atf entries with the catalogue
+- remove catalogue entries with no atf
+```{r}
+atf=read.text("cdliatf_unblocked.atf")  # read csv file 
+
+
+```
+
+## Classification
+At this point, we have one table of 3 columns : text_id, provenience and atf. 
+
+
+- Set aside a copy of 15% of the text with known provenience for testing
+
+```{r}
+
+```
+
