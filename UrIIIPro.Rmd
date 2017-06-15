@@ -4,7 +4,7 @@ output: html_notebook
 ---
 
 
-This Notebook will guide you though the classification task of Ur III administrative texts, assigning unprovenanced tablets to a site. 
+This Notebook will guide you though the classification task of Ur III administrative texts, assigning unprovenienced tablets to a site. 
 
 Insert here a function to cross reference the catalogue and the atf dump for provenience and prepare the adequate csv file.
 
