@@ -8,8 +8,6 @@ This Notebook will guide you though the classification task of Ur III administra
 
 Insert here a function to cross reference the catalogue and the atf dump for provenience and prepare the adequate csv file.
 
-
-
   
 ## Grab the cdli dumps
 ```{r}
@@ -21,13 +19,12 @@ download.file('https://raw.githubusercontent.com/cdli-gh/data/master/cdliatf_unb
               cacheOK = TRUE,
               extra = getOption("download.file.extra"))
 
-
-
 ```
 
 
 
 ## Unzip
+Here we unzip the catalogue and textual data we just downloaded
 ```{r}
 unzip('catalogue.zip', files = NULL, list = FALSE, overwrite = TRUE,
       junkpaths = FALSE, exdir = ".", unzip = "internal",
@@ -40,17 +37,20 @@ unzip('atf.zip', files = NULL, list = FALSE, overwrite = TRUE,
 ```
 
 
-##Clean up catalogue
-- Remove ? after texts with Ur III ?
-- Remove entries from other periods than Ur III and remove the priod column
-- Remove non-administrative texts
-- Remove provenience from entries with ? in provenience and move to ther column
-- Create table with text_id, provenience and an emtpy column for textual data
-- Should I also add dates referenced and size fields?
-
-text_id, atf, known_prov, assumed_prov, guessed_prov
+## Read and chop
+This chunk reads the catalogue into a dataframe and selects only the needed columns
 ```{r}
 catalogue= read.csv("cdli_catalogue.csv")  # read csv file 
+catalogue <- catalogue[,c('id_text','provenience','period')]
+catalogue2 <- catalogue
+```
+
+## Chose period
+This chunk selects only Ur III texts and discards the rest
+```{r}
+# remove lines where period doesn't start with "Ur III"
+
+catalogue <-  subset(catalogue, grepl("Ur III", period) )
 
 ```
 
@@ -59,13 +59,25 @@ catalogue= read.csv("cdli_catalogue.csv")  # read csv file
 - clean up atf from any lines that do not start with a numeral
 - remove numerals
 - clean up tokens
+
 - match the atf entries with the catalogue
 - remove catalogue entries with no atf
 ```{r}
-atf=read.text("cdliatf_unblocked.atf")  # read csv file 
+atf=read.txt("cdliatf_unblocked.atf")  # read csv file 
 
 
 ```
+
+
+##Clean up catalogue
+- Remove ? after texts with Ur III ?
+- Remove entries from other periods than Ur III and remove the priod column
+- Remove non-administrative texts
+- Remove provenience from entries with ? in provenience and move to ther column
+- Create table with text_id, provenience and an emtpy column for textual data
+- Should I also add dates referenced and size fields?
+
+text_id, atf, provenience, assumed_prov, guessed_prov
 
 ## Classification
 At this point, we have one table of 3 columns : text_id, provenience and atf. 
@@ -75,4 +87,6 @@ At this point, we have one table of 3 columns : text_id, provenience and atf.
 
 ```{r}
 
+
 ```
+
