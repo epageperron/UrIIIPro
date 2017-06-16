@@ -4,7 +4,7 @@ output: html_notebook
 ---
 
 
-This Notebook will guide you though the classification task of Ur III administrative texts, assigning unprovenienced tablets to a site. 
+This Notebook will guide you though the classification task of Ur III administrative texts, assigning unprovenanced tablets to a site. 
 
 Insert here a function to cross reference the catalogue and the atf dump for provenience and prepare the adequate csv file.
 
@@ -41,9 +41,7 @@ unzip('atf.zip', files = NULL, list = FALSE, overwrite = TRUE,
 This chunk reads the catalogue into a dataframe and selects only the needed columns
 ```{r}
 catalogue= read.csv("cdli_catalogue.csv")  # read csv file 
-#pick only admin texts
 catalogue <-  subset(catalogue, grepl("Admin", genre) )
-#pick columns
 catalogue <- catalogue[,c('id_text','provenience','period')]
 catalogue2 <- catalogue
 ```
@@ -52,9 +50,8 @@ catalogue2 <- catalogue
 This chunk selects only Ur III texts and discards the rest
 ```{r}
 # remove lines where period doesn't start with "Ur III"
-
-catalogue <-  subset(catalogue, grepl("Ur III", period) )
-
+catalogue <-  subset(catalogue, grepl("Ur III", period))
+catalogue$period <- NULL
 ```
 
 
@@ -62,6 +59,24 @@ catalogue <-  subset(catalogue, grepl("Ur III", period) )
 #Add 2 columns
 catalogue$assumed_prov<-NA
 catalogue$guessed_prov<-NA
+
+
+```
+
+```{r}
+library(stringr)
+cat2 = catalogue
+prov_char <- as.character(cat2$provenience)
+cat2$provenience <- prov_char
+ass_char <- as.character(cat2$assumed_prov)
+cat2$assumed_prov <- ass_char
+is.character(cat2$provenience)
+
+cat2$assumed_prov <- ifelse(str_detect(cat2$provenience, '//?'), cat2$provenience, '')
+
+
+write.csv(cat2, "cat2.csv")
+
 
 ```
 
@@ -82,23 +97,52 @@ atf=read.txt("cdliatf_unblocked.atf")  # read csv file
 
 
 ##Clean up catalogue
-- Remove ? after texts with Ur III ?
-- Remove entries from other periods than Ur III and remove the priod column
-- Remove non-administrative texts
 - Remove provenience from entries with ? in provenience and move to ther column
 - Create table with text_id, provenience and an emtpy column for textual data
 - Should I also add dates referenced and size fields?
 
 text_id, atf, provenience, assumed_prov, guessed_prov
 
+
+
+## At this point we manually cleaned the data to get a chance to apply our algorithm before the end of Friday... 
+
+
 ## Classification
 At this point, we have one table of 3 columns : text_id, provenience and atf. 
 
 
-- Set aside a copy of 15% of the text with known provenience for testing
+- Set aside a copy of 33% of the text with known provenience for testing
 
 ```{r}
+
+# convert cat entry id to p#
+
+
+# match catalogue with atf
+#cat= read.csv("cat.csv")
+atf = read.csv("transcat-3.csv",  header=FALSE)
+colnames(atf) <- c("id_text","atf")
+atf$id_text <- paste("P", atf$id_text, sep="")
 
 
 ```
 
+
+```{r}
+full_data <- merge(cat,atf, by  = "id_text")
+#full_data <- subset(full_data, !is.null(full_data$atf)
+write.csv(full_data, "full_data.csv")
+```
+
+train on 2/3 of known
+test on 1/3 of known
+
+extract features on each provenience :
+word freq
+word length
+freq of bigrams
+topic modeling
+
+get features on the unknown texts
+use the Suporrt Vector Machine algorithm
